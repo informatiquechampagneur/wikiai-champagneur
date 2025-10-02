@@ -354,7 +354,7 @@ function App() {
                                     {getTrustBadge(msg.trust_score)}
                                   </div>
                                 )}
-                                {!msg.isUser && msg.message && msg.message.length > 100 && (
+                                {!msg.isUser && msg.can_download && (
                                   <div className="mt-3 pt-2 border-t border-gray-200">
                                     <p className="text-xs text-gray-600 mb-2">📥 Télécharger cette réponse :</p>
                                     <div className="flex gap-1 flex-wrap">
