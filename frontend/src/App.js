@@ -34,7 +34,7 @@ function App() {
     je_recherche: {
       title: 'Je recherche',
       description: 'Recherchez des informations sur un sujet',
-      placeholder: 'Ex: Je recherche des informations sur la Révolution française...',
+      placeholder: 'Ex: Je recherche des informations sur la Révolution tranquille...',
       icon: '🔍'
     },
     sources_fiables: {
