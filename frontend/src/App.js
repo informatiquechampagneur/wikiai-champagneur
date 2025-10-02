@@ -353,6 +353,41 @@ function App() {
                                     {getTrustBadge(msg.trust_score)}
                                   </div>
                                 )}
+                                {!msg.isUser && msg.message && msg.message.length > 100 && (
+                                  <div className="mt-3 pt-2 border-t border-gray-200">
+                                    <p className="text-xs text-gray-600 mb-2">📥 Télécharger cette réponse :</p>
+                                    <div className="flex gap-1 flex-wrap">
+                                      <button
+                                        onClick={() => downloadDocument(msg.message, 'Réponse WikiAI', 'pdf')}
+                                        className="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded transition-colors"
+                                        disabled={isLoading}
+                                      >
+                                        📄 PDF
+                                      </button>
+                                      <button
+                                        onClick={() => downloadDocument(msg.message, 'Réponse WikiAI', 'docx')}
+                                        className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded transition-colors"
+                                        disabled={isLoading}
+                                      >
+                                        📝 Word
+                                      </button>
+                                      <button
+                                        onClick={() => downloadDocument(msg.message, 'Réponse WikiAI', 'pptx')}
+                                        className="text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 px-2 py-1 rounded transition-colors"
+                                        disabled={isLoading}
+                                      >
+                                        📊 PowerPoint
+                                      </button>
+                                      <button
+                                        onClick={() => downloadDocument(msg.message, 'Réponse WikiAI', 'xlsx')}
+                                        className="text-xs bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded transition-colors"
+                                        disabled={isLoading}
+                                      >
+                                        📈 Excel
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             </div>
                             <div className={`text-xs text-gray-400 mt-1 ${msg.isUser ? 'text-right' : 'text-left'}`}>
