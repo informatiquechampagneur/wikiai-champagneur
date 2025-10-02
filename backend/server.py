@@ -128,14 +128,28 @@ async def get_ai_response(message: str, message_type: str) -> dict:
             system_message=system_messages.get(message_type, system_messages["je_veux"])
         ).with_model("anthropic", "claude-4-sonnet-20250514")
         
-        # Envoi du message
-        user_message = UserMessage(text=message)
+        # Vérifier si l'utilisateur demande un document
+        document_keywords = [
+            "créer", "génère", "document", "fichier", "pdf", "word", "excel", "powerpoint",
+            "télécharger", "exporter", "rapport", "résumé", "fiche", "présentation"
+        ]
+        
+        wants_document = any(keyword in message.lower() for keyword in document_keywords)
+        
+        # Modifier le prompt si document demandé
+        if wants_document:
+            enhanced_message = f"{message}\n\nNote: L'utilisateur semble vouloir créer un document. Structurez votre réponse de manière claire avec des titres et des points clés qui pourront être facilement exportés en PDF, Word, PowerPoint ou Excel."
+            user_message = UserMessage(text=enhanced_message)
+        else:
+            user_message = UserMessage(text=message)
+            
         response = await chat.send_message(user_message)
         
         return {
             "response": response,
             "trust_score": 0.95 if message_type == "sources_fiables" else None,
-            "sources": []
+            "sources": [],
+            "can_download": len(response) > 50  # Permet le téléchargement si réponse assez longue
         }
         
     except Exception as e:
