@@ -170,8 +170,8 @@ function App() {
                 <span className="text-white font-bold text-lg">ÉA</span>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">ÉducAI</h1>
-                <p className="text-sm text-gray-600">Assistant IA pour lycéens français</p>
+                <h1 className="text-2xl font-bold text-gray-900">WikiAI</h1>
+                <p className="text-sm text-gray-600">Assistant IA pour étudiants québécois</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
