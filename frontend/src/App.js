@@ -179,7 +179,7 @@ function App() {
                 ✅ Sources fiables
               </Badge>
               <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                🇫🇷 Français
+                🍁 Québécois
               </Badge>
             </div>
           </div>
