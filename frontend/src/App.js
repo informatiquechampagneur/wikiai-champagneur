@@ -28,7 +28,7 @@ function App() {
     je_veux: {
       title: 'Je veux',
       description: 'Posez vos questions ou demandez de l\'aide',
-      placeholder: 'Ex: Je veux comprendre les dérivées en mathématiques...',
+      placeholder: 'Ex: Je veux comprendre les fonctions en mathématiques...',
       icon: '🎯'
     },
     je_recherche: {
