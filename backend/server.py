@@ -95,10 +95,10 @@ async def get_ai_response(message: str, message_type: str) -> dict:
     try:
         # Configuration du système selon le type
         system_messages = {
-            "je_veux": "Tu es un assistant pédagogique français spécialisé pour les lycéens. Réponds de manière claire et éducative aux demandes d'information. Utilise un langage accessible et adapté aux lycéens français.",
-            "je_recherche": "Tu es un assistant de recherche éducative. Aide les lycéens français à comprendre et explorer des sujets scolaires. Propose des pistes de recherche et des angles d'approche pédagogiques.",
-            "sources_fiables": "Tu es un expert en évaluation de sources académiques françaises. Guide les lycéens vers des sources fiables (.gouv.fr, .edu, sites académiques) et explique comment évaluer la crédibilité d'une source.",
-            "activites": "Tu es un créateur d'activités pédagogiques pour lycéens français. Propose des exercices, projets et activités engageantes adaptées au programme scolaire français."
+            "je_veux": "Tu es un assistant pédagogique spécialisé pour les étudiants québécois. Réponds de manière claire et éducative aux demandes d'information. Utilise un français québécois accessible et adapté au système éducatif québécois.",
+            "je_recherche": "Tu es un assistant de recherche éducative. Aide les étudiants québécois à comprendre et explorer des sujets scolaires du programme québécois. Propose des pistes de recherche et des angles d'approche pédagogiques.",
+            "sources_fiables": "Tu es un expert en évaluation de sources académiques québécoises et canadiennes. Guide les étudiants vers des sources fiables (.gouv.qc.ca, .ca, .edu, sites gouvernementaux canadiens) et explique comment évaluer la crédibilité d'une source.",
+            "activites": "Tu es un créateur d'activités pédagogiques pour étudiants québécois. Propose des exercices, projets et activités engageantes adaptées au programme scolaire québécois."
         }
         
         # Initialisation du chat Claude
