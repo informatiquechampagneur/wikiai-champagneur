@@ -535,6 +535,110 @@ async def generate_document(request: DocumentRequest):
         logging.error(f"Erreur génération document: {e}")
         raise HTTPException(status_code=500, detail=f"Erreur lors de la génération du document: {str(e)}")
 
+@api_router.post("/upload-file")
+async def upload_and_extract_file(file: UploadFile = File(...)):
+    """Upload un fichier et extrait son contenu texte"""
+    try:
+        # Vérifier la taille du fichier (max 10MB)
+        max_size = 10 * 1024 * 1024  # 10MB
+        file_size = 0
+        
+        # Lire le fichier pour vérifier la taille
+        content = await file.read()
+        file_size = len(content)
+        
+        if file_size > max_size:
+            raise HTTPException(
+                status_code=413,
+                detail="Fichier trop volumineux. Taille maximale: 10MB"
+            )
+        
+        # Remettre le pointeur au début pour l'extraction
+        file.file = BytesIO(content)
+        
+        # Extraire le texte
+        extracted_text = await extract_text_from_file(file)
+        
+        # Limiter la longueur du texte extrait (pour éviter les tokens excessifs)
+        max_text_length = 10000  # ~2500 mots
+        if len(extracted_text) > max_text_length:
+            extracted_text = extracted_text[:max_text_length] + "\n\n[...Texte tronqué pour optimiser l'analyse...]"
+        
+        return {
+            "filename": file.filename,
+            "file_size": file_size,
+            "extracted_text": extracted_text,
+            "text_length": len(extracted_text),
+            "message": "Fichier traité avec succès. Vous pouvez maintenant poser votre question."
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Erreur upload fichier: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erreur lors du traitement du fichier: {str(e)}"
+        )
+
+@api_router.post("/analyze-file", response_model=ChatMessage)
+async def analyze_file_with_question(request: FileAnalysisRequest):
+    """Analyse un fichier avec une question spécifique"""
+    try:
+        # Préparer le prompt avec le contenu du fichier
+        enhanced_message = f"""
+CONTEXTE: L'utilisateur a uploadé un document ({request.filename}) et pose la question suivante:
+
+QUESTION: {request.question}
+
+CONTENU DU DOCUMENT:
+{request.extracted_text}
+
+INSTRUCTIONS: 
+- Analysez le contenu du document en relation avec la question posée
+- Fournissez une réponse précise basée sur le contenu du document
+- Si la réponse n'est pas dans le document, mentionnez-le clairement
+- Structurez votre réponse de manière claire et pédagogique
+"""
+
+        # Configuration système pour l'analyse de fichiers
+        system_message = f"""Tu es un assistant IA spécialisé dans l'analyse de documents pour les étudiants québécois. 
+Tu dois analyser le contenu fourni et répondre à la question de l'utilisateur de manière précise et pédagogique.
+Adapte ton langage au niveau d'études québécois et utilise un français accessible."""
+
+        # Initialisation du chat Claude avec Gemini pour les fichiers
+        chat = LlmChat(
+            api_key=os.environ.get('EMERGENT_LLM_KEY'),
+            session_id=f"file-analysis-{uuid.uuid4()}",
+            system_message=system_message
+        ).with_model("gemini", "gemini-2.0-flash")  # Gemini est optimal pour l'analyse de documents
+        
+        # Envoi du message
+        user_message = UserMessage(text=enhanced_message)
+        response = await chat.send_message(user_message)
+        
+        # Créer l'objet ChatMessage
+        chat_message = ChatMessage(
+            session_id=f"file-{request.filename}-{uuid.uuid4()}",
+            message=f"📎 Analyse du fichier '{request.filename}': {request.question}",
+            response=response,
+            message_type=request.message_type,
+            trust_score=0.90,  # Score élevé pour l'analyse de documents
+            sources=[request.filename]
+        )
+        
+        # Sauvegarder en base de données
+        await db.chat_messages.insert_one(chat_message.dict())
+        
+        return chat_message
+        
+    except Exception as e:
+        logging.error(f"Erreur analyse fichier: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erreur lors de l'analyse du fichier: {str(e)}"
+        )
+
 @api_router.get("/subjects")
 async def get_school_subjects():
     """Retourne la liste des matières du système éducatif québécois"""
