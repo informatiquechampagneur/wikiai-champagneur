@@ -157,6 +157,47 @@ function App() {
     );
   };
 
+  const downloadDocument = async (content, title, format) => {
+    try {
+      setIsLoading(true);
+      
+      const response = await axios.post(`${API}/generate-document`, {
+        content: content,
+        title: title || 'Document WikiAI',
+        format: format,
+        filename: `wikiai_document_${Date.now()}`
+      }, {
+        responseType: 'blob'
+      });
+
+      // Créer un lien de téléchargement
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      
+      const extensions = {
+        'pdf': 'pdf',
+        'docx': 'docx', 
+        'pptx': 'pptx',
+        'xlsx': 'xlsx'
+      };
+      
+      link.setAttribute('download', `wikiai_document_${Date.now()}.${extensions[format]}`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      
+      toast.success(`Document ${format.toUpperCase()} téléchargé avec succès !`);
+      
+    } catch (error) {
+      console.error('Erreur téléchargement:', error);
+      toast.error('Erreur lors du téléchargement du document');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50">
       <Toaster position="top-right" />
