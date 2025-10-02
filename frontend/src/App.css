@@ -171,23 +171,79 @@ button:not(:disabled):active {
   border-color: rgba(239, 68, 68, 0.2);
 }
 
-/* Scroll personnalisé */
+/* Scroll personnalisé - TRÈS VISIBLE */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 14px !important;
+  display: block !important;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(243, 244, 246, 0.5);
-  border-radius: 3px;
+  background: #f1f5f9 !important;
+  border-radius: 7px !important;
+  border: 1px solid #e2e8f0 !important;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
+  background: linear-gradient(135deg, #f97316, #2563eb) !important;
+  border-radius: 7px !important;
+  border: 1px solid #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(107, 114, 128, 0.7);
+  background: linear-gradient(135deg, #ea580c, #1d4ed8) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+}
+
+::-webkit-scrollbar-corner {
+  background: #f1f5f9 !important;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: auto !important;
+  scrollbar-color: #f97316 #f1f5f9 !important;
+}
+
+/* FORCER scrollbar dans la zone de messages */
+.messages, .scroll-area, [data-testid*="scroll"], [class*="scroll"] {
+  scrollbar-width: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.messages::-webkit-scrollbar, 
+.scroll-area::-webkit-scrollbar,
+[data-testid*="scroll"]::-webkit-scrollbar,
+[class*="scroll"]::-webkit-scrollbar {
+  width: 16px !important;
+  display: block !important;
+}
+
+.messages::-webkit-scrollbar-track,
+.scroll-area::-webkit-scrollbar-track,
+[data-testid*="scroll"]::-webkit-scrollbar-track,
+[class*="scroll"]::-webkit-scrollbar-track {
+  background: #fef3e2 !important;
+  border-radius: 8px !important;
+  border: 2px solid #f97316 !important;
+}
+
+.messages::-webkit-scrollbar-thumb,
+.scroll-area::-webkit-scrollbar-thumb,
+[data-testid*="scroll"]::-webkit-scrollbar-thumb,
+[class*="scroll"]::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f97316, #ea580c) !important;
+  border-radius: 8px !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.5) !important;
+}
+
+.messages::-webkit-scrollbar-thumb:hover,
+.scroll-area::-webkit-scrollbar-thumb:hover,
+[data-testid*="scroll"]::-webkit-scrollbar-thumb:hover,
+[class*="scroll"]::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ea580c, #dc2626) !important;
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.8) !important;
 }
 
 /* Animation de chargement */
