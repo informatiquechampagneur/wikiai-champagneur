@@ -270,7 +270,16 @@ function App() {
                     scrollbarColor: '#f97316 #fef3e2'
                   }}
                 >
-                  <div className="space-y-4 pr-4">
+                  <div 
+                    className="space-y-4 pr-2" 
+                    style={{
+                      height: '400px',
+                      overflow: 'auto',
+                      paddingRight: '8px',
+                      scrollbarWidth: 'auto',
+                      scrollbarColor: '#f97316 #fef3e2'
+                    }}
+                  >
                     {messages.length === 0 ? (
                       <div className="text-center py-8">
                         <div className="mb-4">
