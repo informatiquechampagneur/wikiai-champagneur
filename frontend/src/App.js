@@ -167,7 +167,7 @@ function App() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">ÉA</span>
+                <span className="text-white font-bold text-lg">WA</span>
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">WikiAI</h1>
