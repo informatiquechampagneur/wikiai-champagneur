@@ -129,7 +129,7 @@ async def get_ai_response(message: str, message_type: str) -> dict:
 # Routes API
 @api_router.get("/")
 async def root():
-    return {"message": "API ÉducAI Français - Assistant IA pour lycéens"}
+    return {"message": "API WikiAI - Assistant IA pour étudiants québécois"}
 
 @api_router.post("/chat", response_model=ChatMessage)
 async def chat_with_ai(request: ChatRequest):
