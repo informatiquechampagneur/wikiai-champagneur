@@ -12,6 +12,17 @@ from datetime import datetime, timezone
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 import asyncio
 import re
+from fastapi.responses import StreamingResponse
+from io import BytesIO
+from docx import Document
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from pptx import Presentation
+from pptx.util import Inches, Pt
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
 
 
 ROOT_DIR = Path(__file__).parent
