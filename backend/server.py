@@ -62,6 +62,12 @@ class SearchResult(BaseModel):
     sources: List[dict]  # [{"url": str, "title": str, "trust_score": float, "content_preview": str}]
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+class DocumentRequest(BaseModel):
+    content: str
+    title: str = "Document WikiAI"
+    format: str = "pdf"  # pdf, docx, pptx, xlsx
+    filename: Optional[str] = None
+
 # Système de confiance des sources
 TRUSTED_DOMAINS = {
     ".gouv.qc.ca": 0.98,
