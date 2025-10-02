@@ -13,6 +13,7 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 import asyncio
 import re
 from fastapi.responses import StreamingResponse
+from fastapi import UploadFile, File, Form
 from io import BytesIO
 from docx import Document
 from reportlab.lib.pagesizes import letter
@@ -23,6 +24,12 @@ from pptx import Presentation
 from pptx.util import Inches, Pt
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
+import PyPDF2
+import docx2txt
+import pdfplumber
+import pandas as pd
+import tempfile
+import os
 
 
 ROOT_DIR = Path(__file__).parent
