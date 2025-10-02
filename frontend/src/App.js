@@ -171,7 +171,7 @@ function App() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">WikiAI</h1>
-                <p className="text-sm text-gray-600">Assistant IA pour étudiants québécois</p>
+                <p className="text-sm text-gray-600">Assistant IA pour les étudiants québécois fourni par le Collège Champagneur</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
