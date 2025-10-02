@@ -261,7 +261,15 @@ function App() {
               
               <CardContent className="flex-1 flex flex-col">
                 {/* Messages */}
-                <ScrollArea className="flex-1 mb-4" style={{ maxHeight: '400px' }}>
+                <ScrollArea 
+                  className="flex-1 mb-4 border-2 border-orange-200 rounded-lg" 
+                  style={{ 
+                    maxHeight: '400px',
+                    overflow: 'auto',
+                    scrollbarWidth: 'auto',
+                    scrollbarColor: '#f97316 #fef3e2'
+                  }}
+                >
                   <div className="space-y-4 pr-4">
                     {messages.length === 0 ? (
                       <div className="text-center py-8">
