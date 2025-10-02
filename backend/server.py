@@ -201,23 +201,27 @@ async def analyze_sources(sources: List[str]):
 
 @api_router.get("/subjects")
 async def get_school_subjects():
-    """Retourne la liste des matières du lycée français"""
+    """Retourne la liste des matières du système éducatif québécois"""
     subjects = {
-        "sciences": {
-            "name": "Sciences",
-            "subjects": ["Mathématiques", "Physique-Chimie", "SVT", "NSI", "SI"]
+        "langues": {
+            "name": "Langues",
+            "subjects": ["Français", "Anglais", "Espagnol"]
         },
-        "litterature": {
-            "name": "Littérature & Langues",
-            "subjects": ["Français", "Philosophie", "Anglais", "Espagnol", "Allemand"]
+        "sciences": {
+            "name": "Sciences & Mathématiques",
+            "subjects": ["Mathématiques", "Sciences et technologies"]
         },
         "sciences_humaines": {
             "name": "Sciences Humaines",
-            "subjects": ["Histoire-Géographie", "SES", "HGGSP"]
+            "subjects": ["Histoire", "Géographie", "Culture et société québécoise", "Monde contemporain"]
         },
-        "arts_sport": {
-            "name": "Arts & Sport",
-            "subjects": ["Arts Plastiques", "Musique", "EPS", "Théâtre"]
+        "formation_generale": {
+            "name": "Formation Générale",
+            "subjects": ["Éducation financière", "Méthodologie", "Éducation physique"]
+        },
+        "arts": {
+            "name": "Arts",
+            "subjects": ["Art dramatique", "Arts plastiques", "Danse", "Musique"]
         }
     }
     return subjects
