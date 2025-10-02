@@ -529,24 +529,84 @@ function App() {
                 
                 <Separator className="mb-4" />
                 
-                {/* Input */}
-                <form onSubmit={sendMessage} className="flex gap-2">
-                  <Input
-                    data-testid="chat-input"
-                    value={currentMessage}
-                    onChange={(e) => setCurrentMessage(e.target.value)}
-                    placeholder={messageTypes[activeTab]?.placeholder || "Tapez votre message..."}
-                    disabled={isLoading}
-                    className="flex-1 bg-white border-gray-200 focus:border-orange-300 focus:ring-orange-200"
-                  />
-                  <Button 
-                    data-testid="send-button"
-                    type="submit" 
-                    disabled={!currentMessage.trim() || isLoading}
-                    className="bg-gradient-to-r from-orange-500 to-blue-600 hover:from-orange-600 hover:to-blue-700 text-white font-medium px-6 transition-all duration-200"
-                  >
-                    {isLoading ? '...' : 'Envoyer'}
-                  </Button>
+                {/* Zone d'upload de fichier */}
+                {uploadedFile && (
+                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-blue-600">📎</span>
+                        <div>
+                          <p className="text-sm font-medium text-blue-800">{uploadedFile.name}</p>
+                          <p className="text-xs text-blue-600">{uploadedFile.text_length} caractères extraits</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setUploadedFile(null)}
+                        className="text-blue-600 hover:text-blue-800 p-1"
+                        title="Supprimer le fichier"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Input avec bouton upload */}
+                <form onSubmit={sendMessageWithFile} className="space-y-2">
+                  <div className="flex gap-2">
+                    <Input
+                      data-testid="chat-input"
+                      value={currentMessage}
+                      onChange={(e) => setCurrentMessage(e.target.value)}
+                      placeholder={
+                        uploadedFile 
+                          ? `Posez votre question sur "${uploadedFile.name}"...`
+                          : messageTypes[activeTab]?.placeholder || "Tapez votre message..."
+                      }
+                      disabled={isLoading || isUploading}
+                      className="flex-1 bg-white border-gray-200 focus:border-orange-300 focus:ring-orange-200"
+                    />
+                    
+                    {/* Bouton upload */}
+                    <label className="relative cursor-pointer">
+                      <input
+                        type="file"
+                        onChange={handleFileUpload}
+                        accept=".pdf,.docx,.doc,.txt,.xlsx,.xls,.csv,.pptx"
+                        className="hidden"
+                        disabled={isUploading}
+                      />
+                      <div className={`
+                        flex items-center justify-center w-12 h-10 rounded-lg border-2 border-dashed transition-all
+                        ${isUploading 
+                          ? 'border-gray-300 bg-gray-100 cursor-not-allowed' 
+                          : 'border-orange-300 bg-orange-50 hover:bg-orange-100 hover:border-orange-400'
+                        }
+                      `}>
+                        {isUploading ? (
+                          <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          <span className="text-orange-600 text-lg">📎</span>
+                        )}
+                      </div>
+                    </label>
+                    
+                    <Button 
+                      data-testid="send-button"
+                      type="submit" 
+                      disabled={!currentMessage.trim() || isLoading || isUploading}
+                      className="bg-gradient-to-r from-orange-500 to-blue-600 hover:from-orange-600 hover:to-blue-700 text-white font-medium px-6 transition-all duration-200"
+                    >
+                      {isLoading ? '...' : uploadedFile ? 'Analyser' : 'Envoyer'}
+                    </Button>
+                  </div>
+                  
+                  {/* Info formats supportés */}
+                  <div className="text-xs text-gray-500 flex items-center gap-2">
+                    <span>📎 Formats supportés: PDF, Word, Excel, PowerPoint, TXT, CSV</span>
+                    <span>•</span>
+                    <span>Max: 10MB</span>
+                  </div>
                 </form>
               </CardContent>
             </Card>
