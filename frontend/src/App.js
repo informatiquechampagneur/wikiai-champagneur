@@ -197,10 +197,10 @@ function App() {
             />
           </div>
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Votre assistant IA pour <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-blue-600">réussir au lycée</span>
+            Votre assistant IA pour <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-blue-600">réussir vos études</span>
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Accédez à des sources fiables, créez des activités pédagogiques personnalisées et recevez de l'aide dans toutes vos matières avec notre IA spécialisée dans l'éducation française.
+            Accédez à des sources fiables québécoises, créez des activités pédagogiques personnalisées et recevez de l'aide dans toutes vos matières avec notre IA spécialisée dans l'éducation québécoise.
           </p>
         </div>
       </section>
