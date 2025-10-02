@@ -40,7 +40,7 @@ function App() {
     sources_fiables: {
       title: 'Sources fiables',
       description: 'Trouvez et vérifiez des sources académiques',
-      placeholder: 'Ex: Quelles sont les meilleures sources sur le réchauffement climatique?',
+      placeholder: 'Ex: Quelles sont les meilleures sources québécoises sur l\'environnement?',
       icon: '✅'
     },
     activites: {
