@@ -107,6 +107,7 @@ function App() {
         type: activeTab,
         trust_score: response.data.trust_score,
         sources: response.data.sources,
+        can_download: response.data.can_download || response.data.response.length > 100,
         timestamp: new Date(response.data.timestamp)
       };
       setMessages(prev => [...prev, aiMessage]);
