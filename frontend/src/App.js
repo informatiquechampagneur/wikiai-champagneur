@@ -213,7 +213,7 @@ function App() {
           <div className="lg:col-span-1">
             <Card className="bg-white/80 backdrop-blur-sm border-orange-100">
               <CardHeader>
-                <CardTitle className="text-lg text-gray-900">📚 Matières du lycée</CardTitle>
+                <CardTitle className="text-lg text-gray-900">📚 Matières scolaires</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
