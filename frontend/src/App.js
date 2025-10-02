@@ -465,6 +465,35 @@ function App() {
         </div>
         
         {/* Educational Image */}
+        {/* Section Téléchargement */}
+        <div className="mt-12">
+          <div className="bg-gradient-to-r from-blue-50 to-orange-50 rounded-xl p-6 border border-orange-200">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              📥 Nouvelle fonctionnalité : Téléchargement de documents
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2">Comment ça marche :</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Posez votre question à WikiAI</li>
+                  <li>• Des boutons de téléchargement apparaîtront sous les réponses</li>
+                  <li>• Choisissez le format : PDF, Word, PowerPoint ou Excel</li>
+                  <li>• Le document se télécharge automatiquement</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2">Exemples de demandes :</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• "Crée-moi un résumé sur..."</li>
+                  <li>• "Génère un document sur..."</li>
+                  <li>• "Fais-moi une fiche de révision..."</li>
+                  <li>• "Prépare une présentation sur..."</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <div className="mt-12 text-center">
           <img 
             src="https://images.unsplash.com/photo-1596574027151-2ce81d85af3e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHw0fHxlZHVjYXRpb24lMjBsZWFybmluZ3xlbnwwfHx8fDE3NTk0MTA1OTh8MA&ixlib=rb-4.1.0&q=85" 
