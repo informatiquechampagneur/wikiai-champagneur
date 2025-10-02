@@ -75,6 +75,12 @@ class DocumentRequest(BaseModel):
     format: str = "pdf"  # pdf, docx, pptx, xlsx
     filename: Optional[str] = None
 
+class FileAnalysisRequest(BaseModel):
+    question: str
+    extracted_text: str
+    filename: str
+    message_type: str = "je_veux"
+
 # Système de confiance des sources
 TRUSTED_DOMAINS = {
     ".gouv.qc.ca": 0.98,
