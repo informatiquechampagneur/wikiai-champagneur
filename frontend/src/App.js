@@ -135,6 +135,110 @@ function App() {
     }
   };
 
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Vérifier la taille du fichier (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('Fichier trop volumineux. Taille maximale: 10MB');
+      return;
+    }
+
+    // Vérifier le format
+    const allowedExtensions = ['pdf', 'docx', 'doc', 'txt', 'xlsx', 'xls', 'csv', 'pptx'];
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    
+    if (!allowedExtensions.includes(fileExtension)) {
+      toast.error('Format non supporté. Formats acceptés: PDF, DOCX, TXT, XLSX, CSV, PPTX');
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await axios.post(`${API}/upload-file`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setUploadedFile({
+        name: response.data.filename,
+        extracted_text: response.data.extracted_text,
+        text_length: response.data.text_length
+      });
+
+      toast.success(`📎 Fichier "${response.data.filename}" analysé ! Posez votre question.`);
+      
+    } catch (error) {
+      console.error('Erreur upload:', error);
+      toast.error('Erreur lors de l\'analyse du fichier');
+    } finally {
+      setIsUploading(false);
+      event.target.value = ''; // Reset input
+    }
+  };
+
+  const sendMessageWithFile = async (e) => {
+    e.preventDefault();
+    if (!currentMessage.trim() || isLoading) return;
+
+    if (uploadedFile) {
+      // Envoyer message avec analyse de fichier
+      setIsLoading(true);
+      
+      const userMessage = {
+        id: Date.now(),
+        message: `📎 ${uploadedFile.name}: ${currentMessage}`,
+        isUser: true,
+        type: activeTab,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, userMessage]);
+      
+      const messageToSend = currentMessage;
+      setCurrentMessage('');
+
+      try {
+        const response = await axios.post(`${API}/analyze-file`, {
+          question: messageToSend,
+          extracted_text: uploadedFile.extracted_text,
+          filename: uploadedFile.name,
+          message_type: activeTab
+        });
+
+        const aiMessage = {
+          id: response.data.id,
+          message: response.data.response,
+          isUser: false,
+          type: activeTab,
+          trust_score: response.data.trust_score,
+          sources: response.data.sources,
+          can_download: true,
+          timestamp: new Date(response.data.timestamp)
+        };
+        setMessages(prev => [...prev, aiMessage]);
+
+        // Réinitialiser le fichier uploadé après utilisation
+        setUploadedFile(null);
+        toast.success('Analyse du document terminée !');
+
+      } catch (error) {
+        console.error('Erreur analyse:', error);
+        toast.error('Erreur lors de l\'analyse du fichier');
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      // Message normal sans fichier
+      sendMessage(e);
+    }
+  };
+
   const getTrustBadge = (trustScore) => {
     if (!trustScore) return null;
     
