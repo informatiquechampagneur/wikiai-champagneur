@@ -53,17 +53,20 @@ class SearchResult(BaseModel):
 
 # Système de confiance des sources
 TRUSTED_DOMAINS = {
-    ".gouv.fr": 0.95,
+    ".gouv.qc.ca": 0.98,
+    ".gouv.ca": 0.95,
     ".edu": 0.90,
-    "education.gouv.fr": 0.98,
-    "eduscol.education.fr": 0.95,
-    "ac-": 0.85,  # sites académiques
-    "rectorat": 0.85,
-    "reseau-canope.fr": 0.90,
-    "bnf.fr": 0.88,
-    "cnrs.fr": 0.92,
-    "universit": 0.75,  # sites universitaires
-    "lycee": 0.70,
+    "quebec.ca": 0.97,
+    "education.gouv.qc.ca": 0.98,
+    "mees.gouv.qc.ca": 0.98,  # Ministère de l'Éducation du Québec
+    "banq.qc.ca": 0.88,  # Bibliothèque nationale du Québec
+    "uqam.ca": 0.85,
+    "umontreal.ca": 0.85,
+    "ulaval.ca": 0.85,
+    "mcgill.ca": 0.85,
+    "cegep": 0.75,
+    "universit": 0.75,
+    ".ca": 0.70,
     ".org": 0.60,
     ".com": 0.40,
     "wikipedia": 0.65
