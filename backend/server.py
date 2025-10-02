@@ -123,6 +123,99 @@ def calculate_trust_score(url: str, content: str = "") -> float:
     
     return round(base_score, 2)
 
+async def extract_text_from_file(file: UploadFile) -> str:
+    """Extrait le texte d'un fichier uploadé"""
+    try:
+        # Créer un fichier temporaire
+        with tempfile.NamedTemporaryFile(delete=False, suffix=f"_{file.filename}") as temp_file:
+            content = await file.read()
+            temp_file.write(content)
+            temp_file_path = temp_file.name
+        
+        extracted_text = ""
+        file_extension = file.filename.lower().split('.')[-1] if '.' in file.filename else ''
+        
+        try:
+            if file_extension == 'pdf':
+                # Extraction PDF avec pdfplumber (meilleure qualité)
+                with pdfplumber.open(temp_file_path) as pdf:
+                    for page in pdf.pages:
+                        text = page.extract_text()
+                        if text:
+                            extracted_text += text + "\n"
+                
+                # Fallback avec PyPDF2 si pdfplumber échoue
+                if not extracted_text.strip():
+                    with open(temp_file_path, 'rb') as pdf_file:
+                        pdf_reader = PyPDF2.PdfReader(pdf_file)
+                        for page in pdf_reader.pages:
+                            extracted_text += page.extract_text() + "\n"
+            
+            elif file_extension in ['docx', 'doc']:
+                # Extraction Word
+                extracted_text = docx2txt.process(temp_file_path)
+            
+            elif file_extension == 'txt':
+                # Fichier texte simple
+                with open(temp_file_path, 'r', encoding='utf-8') as f:
+                    extracted_text = f.read()
+            
+            elif file_extension in ['xlsx', 'xls']:
+                # Extraction Excel
+                try:
+                    df = pd.read_excel(temp_file_path, sheet_name=None)  # Toutes les feuilles
+                    for sheet_name, sheet_data in df.items():
+                        extracted_text += f"\n=== Feuille: {sheet_name} ===\n"
+                        extracted_text += sheet_data.to_string(index=False, na_rep='') + "\n"
+                except Exception as e:
+                    # Fallback pour anciens formats Excel
+                    df = pd.read_excel(temp_file_path, engine='xlrd')
+                    extracted_text = df.to_string(index=False, na_rep='')
+            
+            elif file_extension == 'csv':
+                # Fichier CSV
+                df = pd.read_csv(temp_file_path)
+                extracted_text = df.to_string(index=False, na_rep='')
+            
+            elif file_extension == 'pptx':
+                # PowerPoint (extraction basique)
+                from pptx import Presentation
+                prs = Presentation(temp_file_path)
+                for slide_num, slide in enumerate(prs.slides, 1):
+                    extracted_text += f"\n=== Slide {slide_num} ===\n"
+                    for shape in slide.shapes:
+                        if hasattr(shape, "text"):
+                            extracted_text += shape.text + "\n"
+            
+            else:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Format de fichier non supporté: {file_extension}. "
+                          f"Formats acceptés: PDF, DOCX, TXT, XLSX, CSV, PPTX"
+                )
+        
+        finally:
+            # Nettoyer le fichier temporaire
+            if os.path.exists(temp_file_path):
+                os.unlink(temp_file_path)
+        
+        if not extracted_text.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Impossible d'extraire le texte de ce fichier. Vérifiez que le fichier n'est pas protégé ou corrompu."
+            )
+        
+        return extracted_text.strip()
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Erreur extraction texte: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erreur lors de l'extraction du texte: {str(e)}"
+        )
+
 async def get_ai_response(message: str, message_type: str) -> dict:
     """Obtient une réponse de Claude Sonnet 4 selon le type de message"""
     try:
