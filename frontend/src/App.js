@@ -22,6 +22,8 @@ function App() {
   const [activeTab, setActiveTab] = useState('je_veux');
   const [isLoading, setIsLoading] = useState(false);
   const [subjects, setSubjects] = useState({});
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef(null);
 
   const messageTypes = {
