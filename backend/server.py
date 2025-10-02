@@ -219,6 +219,202 @@ async def analyze_sources(sources: List[str]):
         logging.error(f"Erreur analyse sources: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de l'analyse des sources")
 
+def generate_pdf_document(title: str, content: str) -> BytesIO:
+    """Génère un document PDF"""
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    
+    story = []
+    
+    # Titre
+    title_para = Paragraph(title, styles['Title'])
+    story.append(title_para)
+    story.append(Spacer(1, 12))
+    
+    # Contenu
+    paragraphs = content.split('\n\n')
+    for para in paragraphs:
+        if para.strip():
+            p = Paragraph(para.replace('\n', '<br/>'), styles['Normal'])
+            story.append(p)
+            story.append(Spacer(1, 6))
+    
+    # Pied de page
+    footer = Paragraph(f"Généré par WikiAI - {datetime.now().strftime('%d/%m/%Y %H:%M')}", styles['Normal'])
+    story.append(Spacer(1, 20))
+    story.append(footer)
+    
+    doc.build(story)
+    buffer.seek(0)
+    return buffer
+
+def generate_docx_document(title: str, content: str) -> BytesIO:
+    """Génère un document DOCX"""
+    buffer = BytesIO()
+    doc = Document()
+    
+    # Titre
+    title_para = doc.add_heading(title, 0)
+    
+    # Contenu
+    paragraphs = content.split('\n\n')
+    for para in paragraphs:
+        if para.strip():
+            doc.add_paragraph(para)
+    
+    # Pied de page
+    doc.add_paragraph()
+    footer_para = doc.add_paragraph(f"Généré par WikiAI - {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+    footer_para.runs[0].italic = True
+    
+    doc.save(buffer)
+    buffer.seek(0)
+    return buffer
+
+def generate_pptx_document(title: str, content: str) -> BytesIO:
+    """Génère une présentation PowerPoint"""
+    buffer = BytesIO()
+    prs = Presentation()
+    
+    # Slide titre
+    slide_layout = prs.slide_layouts[0]
+    slide = prs.slides.add_slide(slide_layout)
+    title_shape = slide.shapes.title
+    subtitle_shape = slide.placeholders[1]
+    
+    title_shape.text = title
+    subtitle_shape.text = f"Généré par WikiAI - {datetime.now().strftime('%d/%m/%Y')}"
+    
+    # Slides de contenu
+    paragraphs = [p.strip() for p in content.split('\n\n') if p.strip()]
+    
+    # Diviser le contenu en slides (max 5 points par slide)
+    slides_content = []
+    current_slide = []
+    
+    for para in paragraphs:
+        # Si le paragraphe est long, le diviser en phrases
+        if len(para) > 200:
+            sentences = para.split('. ')
+            for sentence in sentences:
+                if sentence.strip():
+                    current_slide.append(sentence.strip() + ('.' if not sentence.endswith('.') else ''))
+                    if len(current_slide) >= 5:
+                        slides_content.append(current_slide[:])
+                        current_slide = []
+        else:
+            current_slide.append(para)
+            if len(current_slide) >= 5:
+                slides_content.append(current_slide[:])
+                current_slide = []
+    
+    if current_slide:
+        slides_content.append(current_slide)
+    
+    # Créer les slides
+    for i, slide_points in enumerate(slides_content):
+        slide_layout = prs.slide_layouts[1]  # Layout avec bullet points
+        slide = prs.slides.add_slide(slide_layout)
+        
+        title_shape = slide.shapes.title
+        content_shape = slide.placeholders[1]
+        
+        title_shape.text = f"Contenu - Partie {i + 1}"
+        
+        text_frame = content_shape.text_frame
+        text_frame.clear()
+        
+        for j, point in enumerate(slide_points):
+            if j == 0:
+                text_frame.text = point
+            else:
+                p = text_frame.add_paragraph()
+                p.text = point
+                p.level = 0
+    
+    prs.save(buffer)
+    buffer.seek(0)
+    return buffer
+
+def generate_xlsx_document(title: str, content: str) -> BytesIO:
+    """Génère un fichier Excel"""
+    buffer = BytesIO()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "WikiAI Document"
+    
+    # En-têtes
+    ws['A1'] = title
+    ws['A1'].font = Font(bold=True, size=16)
+    ws['A1'].fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
+    ws['A1'].font = Font(bold=True, size=16, color='FFFFFF')
+    
+    # Contenu
+    paragraphs = [p.strip() for p in content.split('\n\n') if p.strip()]
+    
+    ws['A3'] = "Points clés :"
+    ws['A3'].font = Font(bold=True)
+    
+    row = 4
+    for i, para in enumerate(paragraphs):
+        ws[f'A{row}'] = f"{i + 1}."
+        ws[f'B{row}'] = para
+        ws[f'A{row}'].font = Font(bold=True)
+        row += 1
+    
+    # Ajuster la largeur des colonnes
+    ws.column_dimensions['A'].width = 5
+    ws.column_dimensions['B'].width = 80
+    
+    # Pied de page
+    ws[f'A{row + 2}'] = f"Généré par WikiAI le {datetime.now().strftime('%d/%m/%Y à %H:%M')}"
+    ws[f'A{row + 2}'].font = Font(italic=True)
+    
+    wb.save(buffer)
+    buffer.seek(0)
+    return buffer
+
+@api_router.post("/generate-document")
+async def generate_document(request: DocumentRequest):
+    """Génère un document dans le format demandé"""
+    try:
+        # Validation du format
+        allowed_formats = ['pdf', 'docx', 'pptx', 'xlsx']
+        if request.format not in allowed_formats:
+            raise HTTPException(status_code=400, detail=f"Format non supporté. Formats autorisés: {', '.join(allowed_formats)}")
+        
+        # Génération du nom de fichier
+        if not request.filename:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"{request.title.replace(' ', '_')}_{timestamp}.{request.format}"
+        else:
+            filename = request.filename if request.filename.endswith(f".{request.format}") else f"{request.filename}.{request.format}"
+        
+        # Génération du document selon le format
+        if request.format == 'pdf':
+            buffer = generate_pdf_document(request.title, request.content)
+            media_type = "application/pdf"
+        elif request.format == 'docx':
+            buffer = generate_docx_document(request.title, request.content)
+            media_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        elif request.format == 'pptx':
+            buffer = generate_pptx_document(request.title, request.content)
+            media_type = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        elif request.format == 'xlsx':
+            buffer = generate_xlsx_document(request.title, request.content)
+            media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        
+        return StreamingResponse(
+            BytesIO(buffer.read()),
+            media_type=media_type,
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+        
+    except Exception as e:
+        logging.error(f"Erreur génération document: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur lors de la génération du document: {str(e)}")
+
 @api_router.get("/subjects")
 async def get_school_subjects():
     """Retourne la liste des matières du système éducatif québécois"""
