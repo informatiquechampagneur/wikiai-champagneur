@@ -631,11 +631,46 @@ function App() {
         </div>
         
         {/* Educational Image */}
-        {/* Section Téléchargement */}
-        <div className="mt-12">
+        {/* Section Fonctionnalités */}
+        <div className="mt-12 space-y-8">
+          
+          {/* Upload de fichiers */}
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border border-green-200">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              📤 Nouveau : Analysez vos documents
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2">Comment utiliser :</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Cliquez sur l'icône 📎 à côté du champ de message</li>
+                  <li>• Sélectionnez votre document (PDF, Word, Excel, etc.)</li>
+                  <li>• Posez votre question sur le contenu</li>
+                  <li>• WikiAI analyse et répond en se basant sur votre fichier</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2">Exemples d'utilisation :</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• "Résume-moi ce rapport de 50 pages"</li>
+                  <li>• "Quels sont les points clés de ce document ?"</li>
+                  <li>• "Explique-moi les données de ce tableau Excel"</li>
+                  <li>• "Créé des questions d'examen sur ce chapitre"</li>
+                </ul>
+              </div>
+            </div>
+            <div className="mt-4 p-3 bg-white/60 rounded-lg">
+              <p className="text-sm text-gray-700">
+                <strong>Formats supportés :</strong> PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), 
+                Texte (.txt), CSV • <strong>Taille max :</strong> 10MB
+              </p>
+            </div>
+          </div>
+
+          {/* Téléchargement de documents */}
           <div className="bg-gradient-to-r from-blue-50 to-orange-50 rounded-xl p-6 border border-orange-200">
             <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              📥 Nouvelle fonctionnalité : Téléchargement de documents
+              📥 Téléchargement de documents
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
               <div>
